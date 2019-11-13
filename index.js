@@ -54,6 +54,7 @@ bot.on('callback_query',query=>{
     if(textMsg!=="Write new message") {
         switch (query.data) {
             case  'first':
+                bot.pinChatMessage(firstChatId, textMsg);
                 bot.sendMessage(firstChatId, textMsg);
                 textMsg = "Write new message";
                 break;
