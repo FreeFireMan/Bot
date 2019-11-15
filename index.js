@@ -10,26 +10,29 @@ let myMSg= null;
 let myMatch = null;
 const firstChatId = -348731507;
 const SecondChatId = -362169744;
-let textMsg = "Write new message";
-let chat_ids= fs.readFileSync(__dirname + '/listChats.txt').toString();
-let listUser= fs.readFileSync(__dirname + '/users.txt').toString();
-let newUser= fs.readFileSync(__dirname + '/newUser.txt').toString();
-/*
-fs.readFile(__dirname + '/listChats.txt',(err, data) => {
-        chat_ids = data.toString()} );
-fs.readFile(__dirname + '/users.txt',(err, data) => {
-        listUser = data.toString()});
-fs.readFile(__dirname + '/newUser.txt',(err, data) => {
-    newUser = data.toString()});*/
 
-console.log(Array.isArray(JSON.parse(JSON.stringify(listUser))));
+let textMsg = "Write new message";
+let listChats= JSON.parse(fs.readFileSync(__dirname + '/listChats.txt','utf8'));
+let listUser= JSON.parse(fs.readFileSync(__dirname + '/test.json','utf8'));
+let newUser= JSON.parse(fs.readFileSync(__dirname + '/newUser.txt','utf8'));
+
+
+
 
 bot.onText(/\/[a-z.]+/, (msg, match) => {
     const chatId = msg.chat.id;
     myMatch=match;
     myMSg=msg;
- /*   console.log(" before msg : ",msg);
-    console.log("before match : ",match);*/
+let testList= newUser.users.map(item=>{
+    return {
+        text : item.first_name,
+        callback_data: item.user_id
+    }
+})
+    let testText= newUser.users.map((item,i)=>{
+        return item.first_name+" : "+i;
+    })
+    console.log("testText",testText);
 
 
     if (msg.from.id === ROOT_USER.user_id){
@@ -59,10 +62,14 @@ bot.onText(/\/[a-z.]+/, (msg, match) => {
             case  '/msg':
                 textMsg = msg.text.slice(5,msg.text.length);
                 bot.sendMessage(chatId, "I saved your message");
+                console.log(msg);
                 break;
             case  '/addchat':
                 console.log("msg addchat: ",msg);
-                bot.sendMessage(chatId,"Test add user");
+                listChats.chats.push(msg.chat);
+                console.log("listChats : ",listChats);
+                fs.writeFile(__dirname+'/listChats.txt',JSON.stringify(listChats),err => console.log(err));
+                bot.sendMessage(chatId,"Test add addchat");
                 break;
             case  '/adduser':
                 let option = {
@@ -79,17 +86,31 @@ bot.onText(/\/[a-z.]+/, (msg, match) => {
                 console.log("match : ",match);
                 bot.sendMessage(msg.chat.id, "How can we contact you?", option).then(() => {
                     bot.once("contact",(msg)=>{
-                        console.log("contact Test",msg.contact);
-                        newUser.push(msg.contact);
-                        fs.writeFile(__dirname+'/newUser.txt',JSON.stringify(newUser).toString(),err => console.log(err));
+                       // console.log("contact Test",msg.contact);
+                        listUser.users.push(msg.contact);
+                        console.log(listUser);
+                        fs.writeFile(__dirname+'/newUser.txt',JSON.stringify(listUser),err => console.log(err));
                     })});
                 break;
             case  '/chek':
-                /*let chekNewUser = listUser.map(item => {
-                    console.log(item.first_name);
-                    return item;
-                });*/
-                bot.sendMessage(msg.chat.id, listUser.toString());
+                for (let i=0; i<newUser.users.length;i++){
+                    bot.sendMessage(chatId,
+                        `${newUser.users[i].first_name} ${newUser.users[i].last_name?newUser.users[i].last_name :""} ${newUser.users[i].phone_number}`,{
+                        reply_markup:{
+                            inline_keyboard:[[
+                                {
+                                    text: 'Delete',
+                                    callback_data: `Delete : ${newUser.users[i].user_id}`
+                                },
+                                {
+                                    text: 'Add',
+                                    callback_data: `Add : ${newUser.users[i].user_id}`
+                                },
+                            ]
+                            ]
+                        }
+                    })
+                }
                 break;
             default:
                 bot.sendMessage(id, "Error");
@@ -97,7 +118,7 @@ bot.onText(/\/[a-z.]+/, (msg, match) => {
     }
     if (msg.from.id !== ROOT_USER.user_id){
 
-      /*  switch (match[0]) {
+        switch (match[0]) {
             case '/addme':
                 let option = {
                     "parse_mode": "Markdown",
@@ -113,11 +134,39 @@ bot.onText(/\/[a-z.]+/, (msg, match) => {
                 console.log("match : ",match);
                 bot.sendMessage(msg.chat.id, "How can we contact you?", option).then(() => {
                     bot.once("contact",(msg)=>{console.log("contact Test",msg.contact)})});
+             /*   listUser.users.push(JSON.stringify(msg.contact));
+                console.log(listUser);*/
+                break;
+            case  '/chek':
+               /* bot.sendMessage(chatId, 'What group you interesting?',{
+                    reply_markup:{
+                        inline_keyboard:[
+
+                        ]
+                    }
+                });*/
+                for (let i=0; i<newUser.users.length;i++){
+                    bot.sendMessage(chatId, newUser.users[i].first_name,{
+                        reply_markup:{
+                            inline_keyboard:[[
+                                {
+                                    text: 'Delete',
+                                    callback_data: `Delete : ${newUser.users[i].user_id}`
+                                },
+                                {
+                                    text: 'Add',
+                                    callback_data: `Add : ${newUser.users[i].user_id}`
+                                },
+                            ]
+                            ]
+                        }
+                    })
+                }
                 break;
             default:
                 bot.sendMessage(id, "Error");
 
-        }*/
+        }
 
     }
   /*  else{

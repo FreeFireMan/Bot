@@ -1,1 +1,1 @@
-[{ phone_number: '+380978065905',first_name: 'Юрий',user_id: 471460368 },{ phone_number: '380637461782',first_name: 'Ivan',last_name: 'Voloshyn',user_id: 130059762 }]
+{"users":[{"phone_number":",+380978065905","first_name":"Юрий","user_id":471460368},{"phone_number":"380637461782","first_name":"Ivan","last_name":"Voloshyn","user_id":130059762},{"phone_number":"+380978065905","first_name":"Юрий","user_id":471460368}]}

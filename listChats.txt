@@ -1,1 +1,1 @@
-[-376092482,471460368,-348731507,-362169744]
+{"chats":[{"id":"-362169744","title":"testArnold_group1","type":"group","all_members_are_administrators":true},{"id":-362169744,"title":"testArnold_group1","type":"group","all_members_are_administrators":true},{"id":-362169744,"title":"testArnold_group1","type":"group","all_members_are_administrators":true}]}
